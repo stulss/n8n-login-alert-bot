@@ -1,6 +1,5 @@
 # 비밀값 — 절대 커밋 금지
 .env
-_7_board_test/.env
 
 # Python
 __pycache__/

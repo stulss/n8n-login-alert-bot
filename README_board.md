@@ -30,7 +30,7 @@ Windows 11, Docker MySQL, Flask, PyJWT, Tailwind CSS 기반의 RESTful 게시판
 ## 📂 프로젝트 구조
 
 ```
-_7_board_test/
+n8n-login-alert-bot/
 ├── .env                  # 환경 변수 (DB 및 JWT 설정)
 ├── requirements.txt      # 파이썬 의존성 패키지 목록
 ├── docker-compose.yml    # Docker MySQL 설정

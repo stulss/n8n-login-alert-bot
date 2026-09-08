@@ -14,7 +14,7 @@
 
 | 순서 | 한 일 | 사용한 것 |
 |---|---|---|
-| 1 | 기존 Flask 게시판(`_7_board_test`)에 `security_events` 테이블과 `POST/GET /api/security/events` REST API 추가 | Python, Flask, PyMySQL, MySQL |
+| 1 | 기존 Flask 게시판에 `security_events` 테이블과 `POST/GET /api/security/events` REST API 추가 | Python, Flask, PyMySQL, MySQL |
 | 2 | `alert_sender.py` 작성 — 경보 2건(레벨 10 이상 1건 + 미만 1건)을 n8n Webhook으로 전송 | Python, requests |
 | 3 | n8n 워크플로우 구성: `Webhook → Code(판정) → IF(deny?) → 문구 생성 → 슬랙·디스코드·텔레그램 알림 + 게시판 저장 REST 호출` | n8n, JavaScript |
 | 4 | 거부(deny)·허용(allow) 이벤트를 게시판에 "보안" 카테고리 공지글로 자동 등록 | Flask, MySQL |
@@ -56,12 +56,12 @@
 
 ## ④ 실행 방법
 
-① **켜는 것**: Docker Desktop 실행 → MySQL·n8n 컨테이너 기동 → `_7_board_test` 폴더에서 `.env.example`을
-   `.env`로 복사하고 값 채우기 → `pip install -r _7_board_test/requirements.txt`
+① **켜는 것**: Docker Desktop 실행 → MySQL·n8n 컨테이너 기동 → 저장소 루트에서 `.env.example`을
+   `.env`로 복사하고 값 채우기 → `pip install -r requirements.txt`
 
 ② **실행하는 것**:
 ```bash
-cd _7_board_test && python app.py      # 게시판 서버 (포트 5000)
+python app.py      # 게시판 서버 (포트 5000)
 ```
 n8n(`localhost:5678`)에서 워크플로우를 Import 후 활성화(Active) → Webhook URL을 `.env`의
 `N8N_WEBHOOK_URL`에 넣고(같은 파일의 `STUDENT`도 채운다) `python alert_sender.py` 실행
@@ -95,6 +95,6 @@ n8n(`localhost:5678`)에서 워크플로우를 Import 후 활성화(Active) → 
 
 ## 안전 관련 안내
 
-- `.env`는 `.gitignore`에 등록되어 있으며, 실제 값 없는 `_7_board_test/.env.example`만 포함합니다.
+- `.env`는 `.gitignore`에 등록되어 있으며, 실제 값 없는 `.env.example`만 포함합니다.
 - 슬랙/디스코드 Webhook URL, 텔레그램 봇 토큰, `SECURITY_API_KEY`는 이 저장소 어디에도 원문으로
   포함되어 있지 않습니다.
