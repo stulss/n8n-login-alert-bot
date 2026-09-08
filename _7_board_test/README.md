@@ -63,8 +63,11 @@
 ```bash
 cd _7_board_test && python app.py      # 게시판 서버 (포트 5000)
 ```
-n8n(`localhost:5678`)에서 워크플로우를 Import 후 활성화(Active) → Webhook URL을 `alert_sender.py`의
-`N8N_WEBHOOK_URL`에 넣고 `python alert_sender.py` 실행
+n8n(`localhost:5678`)에서 워크플로우를 Import 후 활성화(Active) → Webhook URL을 `.env`의
+`N8N_WEBHOOK_URL`에 넣고(같은 파일의 `STUDENT`도 채운다) `python alert_sender.py` 실행
+
+> **비밀값은 전부 `.env`에서 읽습니다.** `JWT_SECRET_KEY`가 비어 있으면 `app.py`가 기동을 거부하고,
+> `N8N_WEBHOOK_URL`·`STUDENT`가 비어 있으면 `alert_sender.py`가 안내 후 종료합니다.
 
 ③ **통과 화면**: 터미널에 `-> 200` 출력 → n8n Executions에서 전체 노드 초록 → 슬랙/디스코드/텔레그램에
    거부·허용 메시지 도착 → MySQL `security_events`에 새 행 추가 + 게시판에 "[보안]" 공지글 등록 →

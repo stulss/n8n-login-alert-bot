@@ -5,17 +5,25 @@
 실행:
     python alert_sender.py
 
+사전 준비:
+    .env.example 을 .env 로 복사한 뒤 STUDENT 와 N8N_WEBHOOK_URL 을 채운다.
+
 기대 출력:
     [n8n] POST http://localhost:5678/webhook/... -> 200
 """
+import os
 import sys
+from pathlib import Path
 
 import requests  # pip install requests
+from dotenv import load_dotenv
 
-# ── 설정: 본인 값으로 바꿀 것 ─────────────────────────────
-STUDENT = "홍주형"  # 채점 증적 — 반드시 본인 식별자로 바꾼다
-N8N_WEBHOOK_URL = "http://localhost:5678/webhook/7e556d53-a1db-48d5-b35a-2a7dfff408b9"
-TIMEOUT = 10  # 초
+# ── 설정: 같은 폴더의 .env 에서 읽는다 (.env.example 참고) ──
+load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
+
+STUDENT = os.getenv("STUDENT", "").strip()  # 채점 증적 — 본인 식별자
+N8N_WEBHOOK_URL = os.getenv("N8N_WEBHOOK_URL", "").strip()
+TIMEOUT = int(os.getenv("N8N_TIMEOUT", 10))  # 초
 
 # 거부(레벨 10 이상)와 허용(레벨 10 미만)이 모두 섞이도록 구성한다.
 # ip 는 예약 대역(1.2.3.x, 192.168.x.x)만 사용 — 실제 개인 서버로 보내지 않는다.
@@ -43,6 +51,19 @@ def send_to_n8n(url, payload):
 
 
 def main():
+  missing = [
+      name
+      for name, value in (("STUDENT", STUDENT), ("N8N_WEBHOOK_URL", N8N_WEBHOOK_URL))
+      if not value
+  ]
+  if missing:
+    print(
+        f"[설정 오류] .env 에 {', '.join(missing)} 값이 없습니다. "
+        "`.env.example` 을 `.env` 로 복사한 뒤 채우세요.",
+        file=sys.stderr,
+    )
+    return 1
+
   payload = build_payload(STUDENT, ALERTS)
   print(f"[alert_sender] student={STUDENT} alerts={len(ALERTS)}건 전송 시도")
   status = send_to_n8n(N8N_WEBHOOK_URL, payload)

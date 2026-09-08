@@ -17,17 +17,12 @@ class Config:
   DB_PASSWORD = os.getenv("DB_PASSWORD", "123456")
   DB_NAME = os.getenv("DB_NAME", "board_db")
 
-  # JWT Config
-  JWT_SECRET_KEY = os.getenv(
-      "JWT_SECRET_KEY", "board_super_secret_jwt_key_2026_!@#$%"
-  )
+  # JWT Config — 기본값 없음(fail-closed). .env 의 JWT_SECRET_KEY 가 비면 서버가 뜨지 않는다.
+  JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
   JWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", 24))
 
-  # Public Open API Config (data.go.kr)
-  OPENAPI_SERVICE_KEY = os.getenv(
-      "OPENAPI_SERVICE_KEY",
-      "XCwvFxJAAOHXzppLdloapsDqYy3PjNXTLTkF7dY5q13G2%2B1gNPxWZPU%2BU3x5mEtISC8ComH1N1Ti%2BIqbyQsKIg%3D%3D"
-  )
+  # Public Open API Config (data.go.kr) — 비어 있으면 내장 샘플 데이터로 동작한다.
+  OPENAPI_SERVICE_KEY = os.getenv("OPENAPI_SERVICE_KEY", "")
 
   # Flask Config
   PORT = int(os.getenv("FLASK_PORT", 5000))
@@ -35,6 +30,16 @@ class Config:
 
   # 보안 이벤트 REST 용 API 키 (n8n 이 공유) — 비어 있으면 POST 는 항상 401 (fail-closed)
   SECURITY_API_KEY = os.getenv("SECURITY_API_KEY", "")
+
+  @classmethod
+  def validate(cls):
+    """서버 기동 전 필수 비밀값 점검. 없으면 즉시 중단한다."""
+    if not cls.JWT_SECRET_KEY.strip():
+      raise RuntimeError(
+          "JWT_SECRET_KEY 가 비어 있습니다. "
+          ".env.example 을 .env 로 복사한 뒤 값을 채우세요. "
+          '생성: python -c "import secrets; print(secrets.token_urlsafe(32))"'
+      )
 
   @classmethod
   def get_db_dict(cls, include_db=True):

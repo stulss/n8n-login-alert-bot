@@ -1,4 +1,5 @@
-import os
+import sys
+
 from config import Config
 from db import init_db
 from flask import Flask, jsonify, render_template
@@ -59,6 +60,13 @@ def server_error(e):
 
 
 if __name__ == "__main__":
+  # 필수 비밀값(.env) 점검 — 없으면 여기서 즉시 중단
+  try:
+    Config.validate()
+  except RuntimeError as e:
+    print(f"[설정 오류] {e}")
+    sys.exit(1)
+
   # 애플리케이션 시작 시 DB 및 테이블 자동 생성
   try:
     init_db()
