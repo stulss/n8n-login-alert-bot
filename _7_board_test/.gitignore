@@ -1,0 +1,14 @@
+# 비밀값 — 절대 커밋 금지
+.env
+_7_board_test/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
